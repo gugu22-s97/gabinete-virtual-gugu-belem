@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h2>Dashboard - Gabinete Virtual</h2>
+<button onclick="exportar()">Exportar Excel</button>
+</header>
+
+<div class="card">
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>Protocolo</th>
+<th>Nome</th>
+<th>Status</th>
+<th>Ação</th>
+</tr>
+</thead>
+<tbody id="tabela"></tbody>
+</table>
+</div>
+
+<script>
+const token = localStorage.getItem('token');
+
+function carregar(){
+fetch('/demandas',{headers:{Authorization:token}})
+.then(res=>res.json())
+.then(data=>{
+tabela.innerHTML="";
+data.forEach(d=>{
+tabela.innerHTML+=`
+<tr>
+<td>${d.protocolo}</td>
+<td>${d.nome}</td>
+<td>${d.status}</td>
+<td>
+<select onchange="alterar(${d.id}, this.value)">
+<option>Recebida</option>
+<option>Em andamento</option>
+<option>Resolvida</option>
+</select>
+</td>
+</tr>`;
+});
+});
+}
+
+function alterar(id,status){
+fetch('/status/'+id,{
+method:'PUT',
+headers:{'Content-Type':'application/json',Authorization:token},
+body:JSON.stringify({status})
+}).then(()=>carregar());
+}
+
+function exportar(){
+window.open('/exportar');
+}
+
+carregar();
+</script>
+</body>
+</html>

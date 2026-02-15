@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Gabinete Virtual Vereador Gugu Belém</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<h2>Gabinete Virtual Vereador Gugu Belém</h2>
+</header>
+
+<div class="card">
+<input type="text" id="nome" placeholder="Nome Completo">
+<input type="text" id="apelido" placeholder="Apelido">
+<input type="text" id="endereco" placeholder="Endereço">
+<input type="text" id="telefone" placeholder="Telefone">
+<input type="date" id="data_nascimento">
+<textarea id="demanda" placeholder="Descreva sua demanda"></textarea>
+
+<label>
+<input type="checkbox" id="consentimento">
+Autorizo o uso dos meus dados conforme LGPD.
+</label>
+
+<button onclick="cadastrar()">Enviar Demanda</button>
+<p id="resposta"></p>
+</div>
+
+<script>
+function cadastrar() {
+fetch('/cadastro', {
+method: 'POST',
+headers: {'Content-Type': 'application/json'},
+body: JSON.stringify({
+nome: nome.value,
+apelido: apelido.value,
+endereco: endereco.value,
+telefone: telefone.value,
+data_nascimento: data_nascimento.value,
+demanda: demanda.value,
+consentimento: consentimento.checked
+})
+})
+.then(res => res.json())
+.then(data => {
+resposta.innerHTML = "Protocolo: " + data.protocolo;
+});
+}
+</script>
+</body>
+</html>
